@@ -23,7 +23,7 @@ namespace DiosesModernos {
 
         #region Getters
         public DifficultyLevel difficulty {
-            get { return difficulty; }
+            get { return _difficulty; }
         }
 
         public Player player {

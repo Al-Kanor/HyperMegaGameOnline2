@@ -9,8 +9,6 @@ namespace DiosesModernos {
         #region Override
         // This method is called when an instance of your the game is created
         public override void GameStarted () {
-            // Spawn new cube each second
-            AddTimer (SpawnCube, 100);
             // Reset game every 30 seconds
             AddTimer (Reset, 30000);
         }
@@ -20,12 +18,12 @@ namespace DiosesModernos {
             switch (message.Type) {
                 // called when a player clicks on the ground
                 case "Move":
-                    sender.x = message.GetFloat (0);
-                    sender.z = message.GetFloat (1);
-                    Broadcast ("Move", sender.ConnectUserId, sender.x, sender.z);
+                    sender.avatar.x = message.GetFloat (0);
+                    sender.avatar.z = message.GetFloat (1);
+                    Broadcast ("Move", sender.ConnectUserId, sender.avatar.x, sender.avatar.z);
                     break;
                 case "Cube Destroyed":
-                    // called when the player has destroyed a cube
+                    /*// called when the player has destroyed a cube
                     int destroyedCubeId = int.Parse (message.GetString (0).Replace ("Cube", ""));
 
                     // Find a cube by this id
@@ -41,7 +39,7 @@ namespace DiosesModernos {
                         sender.cubesDestroyed++;
                         sender.Send ("Score", sender.cubesDestroyed);
                     }
-                    break;
+                    break;*/
                 case "Chat":
                     foreach (Player player in Players) {
                         if (player.ConnectUserId != sender.ConnectUserId) {
@@ -57,14 +55,14 @@ namespace DiosesModernos {
             foreach (Player player in Players) {
                 if (player.ConnectUserId != newPlayer.ConnectUserId) {
                     player.Send ("PlayerJoined", newPlayer.ConnectUserId, 0, 0);
-                    newPlayer.Send ("PlayerJoined", player.ConnectUserId, player.x, player.z);
+                    newPlayer.Send ("PlayerJoined", player.ConnectUserId, player.avatar.x, player.avatar.z);
                 }
             }
 
             // Send current cubes infos to the player
-            foreach (Cube cube in cubes) {
+            /*foreach (Cube cube in cubes) {
                 newPlayer.Send ("Cube Spawn", cube.id, cube.x, cube.z);
-            }
+            }*/
         }
 
         // This method is called when a player leaves the game
@@ -74,15 +72,15 @@ namespace DiosesModernos {
         #endregion
 
         #region Private properties
-        const int MAX_CUBES = 20;
+        //const int MAX_CUBES = 20;
 
-        List<Cube> cubes = new List<Cube> ();
-        int lastCubeId = 0;
+        //List<Cube> cubes = new List<Cube> ();
+        //int lastCubeId = 0;
         #endregion
 
         #region Private methods
         void Reset () {
-            // Score
+            /*// Score
             Player winner = new Player ();
             int scoreMax = -1;
             foreach (Player player in Players) {
@@ -104,10 +102,10 @@ namespace DiosesModernos {
             foreach (Player player in Players) {
                 player.cubesDestroyed = 0;
             }
-            Broadcast ("Score", 0);
+            Broadcast ("Score", 0);*/
         }
 
-        void SpawnCube () {
+        void SpawnCube () {/*
             if (MAX_CUBES <= cubes.Count) return;
             System.Random rand = new System.Random ();
             int x = rand.Next (-20, 20);
@@ -119,7 +117,7 @@ namespace DiosesModernos {
             cubes.Add (tmpCube);
             ++lastCubeId;
             // Broadcast new cube information to all players
-            Broadcast ("Cube Spawn", tmpCube.id, tmpCube.x, tmpCube.z);
+            Broadcast ("Cube Spawn", tmpCube.id, tmpCube.x, tmpCube.z);*/
         }
         #endregion
     }

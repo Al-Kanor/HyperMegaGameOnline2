@@ -5,7 +5,7 @@ using System.Text;
 using PlayerIO.GameLibrary;
 
 namespace DiosesModernos {
-    class Player : BasePlayer {
+    public class Player : BasePlayer {
         #region Getters
         public Character avatar {
             get { return _avatar; }

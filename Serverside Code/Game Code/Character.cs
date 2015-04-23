@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace DiosesModernos {
-    class Character {
+    public class Character {
         #region Getters
         public int life {
             get { return _life; }
@@ -12,10 +12,27 @@ namespace DiosesModernos {
 
         public Vector3 position {
             get { return _position; }
+            set { _position = value; }
         }
 
         public Vector3 rotation {
             get { return _rotation; }
+            set { _rotation = value; }
+        }
+
+        public float x {
+            get { return _position.x; }
+            set { _position.x = value; }
+        }
+
+        public float y {
+            get { return _position.y; }
+            set { _position.y = value; }
+        }
+
+        public float z {
+            get { return _position.z; }
+            set { _position.z = value; }
         }
         #endregion
 

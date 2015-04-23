@@ -35,10 +35,10 @@ namespace DiosesModernos {
 
             // User is just using this device with no account
             PlayerIOClient.PlayerIO.Connect (
-                "gaminho-test-izo9ok414egosmzcsrd3vw",  // Game id 
-                "public",							    // The id of the connection, as given in the settings section of the admin panel. By default, a connection with id='public' is created
-                playerId,							    // The id of the user connecting. 
-                null,								    // If the connection identified by the connection id only accepts authenticated requests, the auth value generated based on playerId is added here
+                "dioses-modernos-qxra1omlxkmsh9rxnzsonq",   // Game id 
+                "public",							        // The id of the connection, as given in the settings section of the admin panel. By default, a connection with id='public' is created
+                playerId,							        // The id of the user connecting. 
+                null,								        // If the connection identified by the connection id only accepts authenticated requests, the auth value generated based on playerId is added here
                 null,
                 null,
                 delegate (Client client) {
@@ -82,11 +82,6 @@ namespace DiosesModernos {
                 switch (message.Type) {
                     case "Chat":
                         Debug.Log ("Message from " + message.GetString (0) + " : " + message.GetString (1));
-                        break;
-                    case "Cube Destroyed":
-                        GameObject.Find ("Cube" + message.GetInt (0)).Recycle ();
-                        break;
-                    case "Cube Spawn":
                         break;
                     case "Debug":
                         Debug.Log ("Message from server : " + message.GetString (0));
@@ -134,12 +129,12 @@ namespace DiosesModernos {
             Debug.Log ("Successfully connected to the server");
 
             // Create or join the room	
-            string roomId = "Gaminho";
+            string roomId = "DiosesModernos";
 
             client.Multiplayer.CreateJoinRoom (
                 roomId,
-                "Gaminho",  // The room type started on the server
-                false,		// Should the room be visible in the lobby?
+                "DiosesModernos",   // The room type started on the server
+                false,		        // Should the room be visible in the lobby?
                 null,
                 null,
                 delegate (Connection connection) {

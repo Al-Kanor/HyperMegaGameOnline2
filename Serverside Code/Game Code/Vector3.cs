@@ -4,18 +4,21 @@ using System.Linq;
 using System.Text;
 
 namespace DiosesModernos {
-    class Vector3 {
+    public class Vector3 {
         #region Getters
         public float x {
             get { return _x; }
+            set { _x = value; }
         }
 
         public float y {
             get { return _y; }
+            set { _y = value; }
         }
 
         public float z {
             get { return _z; }
+            set { _z = value; }
         }
         #endregion
 
