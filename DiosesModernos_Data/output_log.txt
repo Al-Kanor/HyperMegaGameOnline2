@@ -20,7 +20,7 @@ Platform assembly: C:\Users\Public\Documents\Unity Projects\DiosesModernos\Diose
 Loading C:\Users\Public\Documents\Unity Projects\DiosesModernos\DiosesModernos_Data\Managed\PlayerIOUnity3DClient.dll into Unity Child Domain
 Platform assembly: C:\Users\Public\Documents\Unity Projects\DiosesModernos\DiosesModernos_Data\Managed\XInputDotNetPure.dll (this message is harmless)
 Loading C:\Users\Public\Documents\Unity Projects\DiosesModernos\DiosesModernos_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
-- Completed reload, in  0.067 seconds
+- Completed reload, in  0.064 seconds
 <RI> Initializing input.
 <RI> Input initialized.
 desktop: 1360x768 60Hz; virtual: 1360x768 at 0,0
@@ -30,7 +30,7 @@ Platform assembly: C:\Users\Public\Documents\Unity Projects\DiosesModernos\Diose
 Shader 'Toon/Basic Outline': fallback shader 'Toon/Basic' not found
 WARNING: Shader Unsupported: 'Toon/Basic Outline' - Setting to default shader.
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 25a8 -> priority: 1 
+  Thread -> id: 270c -> priority: 1 
 Successfully connected to the server
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
@@ -40,7 +40,19 @@ Joined Room : DiosesModernos
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 
-272698569 has joined !
+963089779 has joined !
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+switch
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+switch
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
+
+switch
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebug.gen.cpp Line: 56)
 

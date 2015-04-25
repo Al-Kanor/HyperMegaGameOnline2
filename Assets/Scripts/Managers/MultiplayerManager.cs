@@ -202,6 +202,7 @@ namespace DiosesModernos {
             GameObject allyObject = ObjectPool.Spawn (_allyPrefab);
             allyObject.GetComponent<Ally> ().id = playerId;
             allies.Add (allyObject.GetComponent<Ally> ());
+            GameManager.instance.boss.AddTarget (allyObject.transform);
         }
 
         void PlayerLeft (string playerId) {
@@ -218,7 +219,7 @@ namespace DiosesModernos {
         void PlayerPosition (string playerId, float px, float pz, float ry) {
             foreach (Ally ally in allies) {
                 if (ally.id == playerId) {
-                    ally.transform.position = new Vector3 (px, 1, pz);
+                    ally.ClampPosition (new Vector3 (px, 1, pz));
                     ally.transform.rotation = Quaternion.Euler (0, ry, 0);
                     break;
                 }

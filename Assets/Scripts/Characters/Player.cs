@@ -114,6 +114,7 @@ namespace DiosesModernos {
                 v = Input.GetAxis ("Vertical");
             }
             Vector3 move = new Vector3 (h, 0, v);
+            move.Normalize ();
             Vector3 newPos = transform.position + move * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
 
             if (InputManager.instance.joystickConnected) {
@@ -180,6 +181,7 @@ namespace DiosesModernos {
 
         void Start () {
             transform.position = new Vector3 (Random.Range (-20, 20), 1, Random.Range (-20, 20));
+            GameManager.instance.boss.AddTarget (transform);
         }
 
         void Update () {

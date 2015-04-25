@@ -45,7 +45,7 @@ namespace DiosesModernos {
                     collision.transform.parent.Recycle ();
                     break;
                 case "Player":
-                    GameManager.instance.ResetGame ();
+                    //GameManager.instance.ResetGame ();
                     break;
             }
             gameObject.Recycle ();

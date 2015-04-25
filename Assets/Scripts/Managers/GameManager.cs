@@ -10,6 +10,9 @@ namespace DiosesModernos {
         [Tooltip ("Player")]
         Player _player;
         [SerializeField]
+        [Tooltip ("Boss")]
+        Boss _boss;
+        [SerializeField]
         [Tooltip ("Base difficulty")]
         DifficultyLevel _difficulty;
         #endregion
@@ -23,6 +26,10 @@ namespace DiosesModernos {
         #endregion
 
         #region Getters
+        public Boss boss {
+            get { return _boss; }
+        }
+
         public DifficultyLevel difficulty {
             get { return _difficulty; }
         }
