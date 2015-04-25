@@ -9,6 +9,7 @@ namespace DiosesModernos {
         #region Override
         // This method is called when an instance of your the game is created
         public override void GameStarted () {
+            SendPlayersPositions ();
             // Reset game every 30 seconds
             AddTimer (Reset, 30000);
         }
@@ -16,14 +17,12 @@ namespace DiosesModernos {
         // This method is called when a player sends a message into the server code
         public override void GotMessage (Player sender, Message message) {
             switch (message.Type) {
-                // called when a player clicks on the ground
-                case "Move":
-                    sender.avatar.x = message.GetFloat (0);
-                    sender.avatar.z = message.GetFloat (1);
-                    Broadcast ("Move", sender.ConnectUserId, sender.avatar.x, sender.avatar.z);
+                // The new position / rotation of a player
+                case "Player Position":
+                    PlayerPosition (sender.ConnectUserId, message.GetFloat (0), message.GetFloat (1), message.GetFloat (2));
                     break;
-                case "Cube Destroyed":
-                    /*// called when the player has destroyed a cube
+                /*case "Cube Destroyed":
+                    // called when the player has destroyed a cube
                     int destroyedCubeId = int.Parse (message.GetString (0).Replace ("Cube", ""));
 
                     // Find a cube by this id
@@ -40,6 +39,7 @@ namespace DiosesModernos {
                         sender.Send ("Score", sender.cubesDestroyed);
                     }
                     break;*/
+                // A player sends a message to the other players
                 case "Chat":
                     foreach (Player player in Players) {
                         if (player.ConnectUserId != sender.ConnectUserId) {
@@ -54,11 +54,11 @@ namespace DiosesModernos {
         public override void UserJoined (Player newPlayer) {
             foreach (Player player in Players) {
                 if (player.ConnectUserId != newPlayer.ConnectUserId) {
-                    player.Send ("PlayerJoined", newPlayer.ConnectUserId, 0, 0);
-                    newPlayer.Send ("PlayerJoined", player.ConnectUserId, player.avatar.x, player.avatar.z);
+                    player.Send ("Player Joined", newPlayer.ConnectUserId);
+                    newPlayer.Send ("Player Joined", player.ConnectUserId, player.avatar.x, player.avatar.z);
                 }
             }
-
+            
             // Send current cubes infos to the player
             /*foreach (Cube cube in cubes) {
                 newPlayer.Send ("Cube Spawn", cube.id, cube.x, cube.z);
@@ -67,7 +67,7 @@ namespace DiosesModernos {
 
         // This method is called when a player leaves the game
         public override void UserLeft (Player player) {
-            Broadcast ("PlayerLeft", player.ConnectUserId);
+            Broadcast ("Player Left", player.ConnectUserId);
         }
         #endregion
 
@@ -79,6 +79,7 @@ namespace DiosesModernos {
         #endregion
 
         #region Private methods
+        // Reset the game
         void Reset () {
             /*// Score
             Player winner = new Player ();
@@ -105,7 +106,15 @@ namespace DiosesModernos {
             Broadcast ("Score", 0);*/
         }
 
-        void SpawnCube () {/*
+        // Regularly send position and rotation of the players to all players
+        void SendPlayersPositions () {
+            foreach (Player player in Players) {
+                Broadcast ("Player Position", player.ConnectUserId, player.avatar.x, player.avatar.z, player.avatar.rotation.y);
+            }
+            ScheduleCallback (SendPlayersPositions, 50);    // Envoi toutes les 50 millisecondes pour un rendu fluide
+        }
+
+        /*void SpawnCube () {
             if (MAX_CUBES <= cubes.Count) return;
             System.Random rand = new System.Random ();
             int x = rand.Next (-20, 20);
@@ -117,7 +126,19 @@ namespace DiosesModernos {
             cubes.Add (tmpCube);
             ++lastCubeId;
             // Broadcast new cube information to all players
-            Broadcast ("Cube Spawn", tmpCube.id, tmpCube.x, tmpCube.z);*/
+            Broadcast ("Cube Spawn", tmpCube.id, tmpCube.x, tmpCube.z);
+        }*/
+        #endregion
+
+        #region Client requests treatment
+        void PlayerPosition (string playerId, float px, float pz, float ry) {
+            foreach (Player player in Players) {
+                if (player.ConnectUserId == playerId) {
+                    player.avatar.x = px;
+                    player.avatar.z = pz;
+                    player.avatar.rotation.y = ry;
+                }
+            }
         }
         #endregion
     }

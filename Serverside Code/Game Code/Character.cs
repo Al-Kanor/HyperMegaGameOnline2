@@ -36,6 +36,11 @@ namespace DiosesModernos {
         }
         #endregion
 
+        public Character () {
+            _position = new Vector3 ();
+            _rotation = new Vector3 ();
+        }
+
         #region Private properties
         int _life;
         Vector3 _position;

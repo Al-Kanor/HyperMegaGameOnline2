@@ -12,6 +12,10 @@ namespace DiosesModernos {
         }
         #endregion
 
+        public Player () {
+            _avatar = new Character ();
+        }
+
         #region Private properties
         Character _avatar;
         #endregion

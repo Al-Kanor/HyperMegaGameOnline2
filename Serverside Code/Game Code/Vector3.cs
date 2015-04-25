@@ -22,6 +22,10 @@ namespace DiosesModernos {
         }
         #endregion
 
+        public Vector3 () {
+
+        }
+
         #region Private properties
         float _x = 0;
         float _y = 0;
