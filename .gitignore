@@ -20,3 +20,7 @@ DiosesModernos-csharp.sln
 
 # Unity3D Generated File On Crash Reports
 DiosesModernos/sysinfo.txt
+
+# Serverside Code
+Serverside\ Code/Game\ Code/obj/
+Serverside\ Code/Player.IO\ Test\ Server\ Project/obj/
