@@ -8,6 +8,9 @@ namespace DiosesModernos {
         #region Properties
         [Header ("Configuration")]
         [SerializeField]
+        [Tooltip ("Turn true to play in online, false to play in solo (no network)")]
+        bool _online = true;
+        [SerializeField]
         [Tooltip ("Delay between 2 regular sends to the server")]
         float _serverRate = 0.2f;
 
@@ -35,6 +38,10 @@ namespace DiosesModernos {
         public bool connected {
             get { return _pioConnection != null ? _pioConnection.Connected : false; }
         }
+
+        public bool online {
+            get { return _online; }
+        }
         #endregion
 
         #region API
@@ -44,19 +51,24 @@ namespace DiosesModernos {
             _pioConnection.Disconnect ();
         }*/
 
-        /*public void SendBossDestroyed () {
-            _pioConnection.Send ("Boss Destroyed", GameManager.instance.player.id);
-        }*/
+        public void SendBossDamage (int damage) {
+            _pioConnection.Send ("Boss Damage", damage);
+        }
+
+        public void SendPlayerShoot () {
+            Player player = GameManager.instance.player;
+            _pioConnection.Send (
+                "Player Shoot",
+                player.transform.position.x,
+                player.transform.position.z,
+                player.transform.rotation.eulerAngles.y
+            );
+        }
         #endregion
 
         #region Unity
-        /*void FixedUpdate () {
-            
-            //GotMessages ();
-        }*/
-
         void Start () {
-            StartConnection ();
+            if (_online) StartConnection ();
         }
         #endregion
 
@@ -89,6 +101,14 @@ namespace DiosesModernos {
             do {
                 foreach (PlayerIOClient.Message message in _messages) {
                     switch (message.Type) {
+                        // The new health of the boss
+                        case "Boss Health":
+                            GameManager.instance.boss.health = message.GetInt (0);
+                            break;
+                        // The boss has a new target
+                        case "Boss Target":
+                            BossTarget (message.GetString (0));
+                            break;
                         // A player sends a message to the other players
                         case "Chat":
                             Debug.Log ("Message from " + message.GetString (0) + " : " + message.GetString (1));
@@ -109,12 +129,23 @@ namespace DiosesModernos {
                         case "Player Position":
                             PlayerPosition (message.GetString (0), message.GetFloat (1), message.GetFloat (2), message.GetFloat (3));
                             break;
+                        // A player shoots
+                        case "Player Shoot":
+                            PlayerShoot (message.GetString (0), message.GetFloat (1), message.GetFloat (2), message.GetFloat (3));
+                            break;
                     }
                 }
                 // Clear message queue after it's been processed
                 _messages.Clear ();
                 yield return new WaitForFixedUpdate ();
             } while (connected);
+        }
+
+        void GoOffline () {
+            _online = false;
+            Boss boss = GameManager.instance.boss;
+            boss.AddTarget (GameManager.instance.player.transform);
+            boss.StartCoroutine ("UpdateTarget");
         }
 
         // The player joins the room
@@ -130,6 +161,7 @@ namespace DiosesModernos {
                 },
                 delegate (PlayerIOError error) {
                     Debug.LogError ("Error Joining Room : " + error.ToString ());
+                    GoOffline ();
                 }
             );
         }
@@ -162,6 +194,7 @@ namespace DiosesModernos {
                 },
                 delegate (PlayerIOError error) {
                     Debug.Log ("Error connecting : " + error.ToString ());
+                    GoOffline ();
                 }
             );
         }
@@ -197,18 +230,30 @@ namespace DiosesModernos {
         #endregion
 
         #region Server requests treatment
+        void BossTarget (string playerId) {
+            foreach (Ally ally in allies) {
+                if (ally.id == playerId) {
+                    GameManager.instance.boss.target = ally.transform;
+                    return;
+                }
+            }
+            // No target found among the players, by logic the target is therefore the player
+            GameManager.instance.boss.target = GameManager.instance.player.transform;
+        }
+
         void PlayerJoined (string playerId) {
             Debug.Log (playerId + " has joined !");
             GameObject allyObject = ObjectPool.Spawn (_allyPrefab);
             allyObject.GetComponent<Ally> ().id = playerId;
             allies.Add (allyObject.GetComponent<Ally> ());
-            GameManager.instance.boss.AddTarget (allyObject.transform);
+            //GameManager.instance.boss.AddTarget (allyObject.transform);
         }
 
         void PlayerLeft (string playerId) {
             Debug.Log (playerId + " left the room !");
             foreach (Ally ally in allies) {
                 if (ally.id == playerId) {
+                    GameManager.instance.boss.RemoveTarget (ally.transform);
                     ally.Recycle ();
                     allies.Remove (ally);
                     break;
@@ -219,9 +264,22 @@ namespace DiosesModernos {
         void PlayerPosition (string playerId, float px, float pz, float ry) {
             foreach (Ally ally in allies) {
                 if (ally.id == playerId) {
-                    ally.ClampPosition (new Vector3 (px, 1, pz));
+                    //ally.ClampPosition (new Vector3 (px, 1, pz));
+                    ally.InterpolatePosition (new Vector3 (px, 1, pz));
                     ally.transform.rotation = Quaternion.Euler (0, ry, 0);
-                    break;
+                    return;
+                }
+            }
+        }
+
+        void PlayerShoot (string playerId, float px, float pz, float ry) {
+            foreach (Ally ally in allies) {
+                if (ally.id == playerId) {
+                    //ally.ClampPosition (new Vector3 (px, 1, pz));
+                    ally.InterpolatePosition (new Vector3 (px, 1, pz));
+                    ally.transform.rotation = Quaternion.Euler (0, ry, 0);
+                    ally.Shoot ();
+                    return;
                 }
             }
         }

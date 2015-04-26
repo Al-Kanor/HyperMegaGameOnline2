@@ -13,6 +13,10 @@ namespace DiosesModernos {
                 _lastKnownPos = pos;
             }
         }
+
+        public void InterpolatePosition (Vector3 pos) {
+            _targetPos = pos;
+        }
         #endregion
 
         #region Unity
@@ -21,7 +25,12 @@ namespace DiosesModernos {
         }
 
         void FixedUpdate () {
-            ExtrapolatePosition ();
+            //ExtrapolatePosition ();
+            transform.position = Vector3.Lerp (transform.position, _targetPos, _speed * Time.fixedDeltaTime);
+        }
+
+        void Start () {
+            _targetPos = transform.position;
         }
         #endregion
 
@@ -36,6 +45,7 @@ namespace DiosesModernos {
         State state = State.IDLE;
         Vector3 _lastKnownPos;
         Vector3 _move;
+        Vector3 _targetPos;
         #endregion
 
         #region Private methods
@@ -43,11 +53,11 @@ namespace DiosesModernos {
          * Extrapolates the position of the character to "guess" the position
          * between two updates from the server
          */
-        void ExtrapolatePosition () {
+        /*void ExtrapolatePosition () {
             if (State.WALK == state) {
                 transform.position += _move * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
             }
-        }
+        }*/
         #endregion
     }
 }

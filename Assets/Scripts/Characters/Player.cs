@@ -37,13 +37,6 @@ namespace DiosesModernos {
         [Tooltip ("Seconds between two shoots")]
         [Range (0.0f, 1.0f)]
         float _shootDelay = 0.1f;
-        [SerializeField]
-        [Tooltip ("Distance between the player and the bullets shooted (a too high value can let the player shooting through walls)")]
-        [Range (0.0f, 3.0f)]
-        float _armLength = 0.9f;
-        [SerializeField]
-        [Tooltip ("Bullet shooted by the player")]
-        GameObject _bulletPrefab;
 
         [Header ("Crystals")]
         [SerializeField]
@@ -53,11 +46,6 @@ namespace DiosesModernos {
         [SerializeField]
         [Tooltip ("Crystal casted by the player")]
         GameObject _crystalPrefab;
-
-        [Header ("SFX")]
-        [SerializeField]
-        [Tooltip ("Shoot SFX")]
-        AudioClip _shootSFX;
 
         [Header ("Links")]
         [SerializeField]
@@ -116,12 +104,12 @@ namespace DiosesModernos {
             Vector3 move = new Vector3 (h, 0, v);
             move.Normalize ();
             Vector3 newPos = transform.position + move * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
-
             if (InputManager.instance.joystickConnected) {
                 transform.LookAt (newPos);
             }
-
             transform.position = newPos;
+            // Physic hack to avoid player auto move
+            GetComponent<Rigidbody> ().velocity = Vector3.zero;
             #endregion
 
             #region Static rotation
@@ -248,22 +236,29 @@ namespace DiosesModernos {
             }
         }
 
-        void Shoot () {
-            ObjectPool.Spawn (_bulletPrefab, transform.position + transform.forward * _armLength, transform.rotation);
+        /*void Shoot () {
+            MultiplayerManager.instance.SendPlayerShoot ();
             GameObject b = ObjectPool.Spawn (_bulletPrefab, transform.position + transform.forward * _armLength, transform.rotation);
+            b.GetComponent<Bullet> ().launcher = this;
+            b = ObjectPool.Spawn (_bulletPrefab, transform.position + transform.forward * _armLength, transform.rotation);
+            b.GetComponent<Bullet> ().launcher = this;
             b.transform.position += transform.right * 0.2f;
             b.transform.Rotate (transform.up * 5);
             b = ObjectPool.Spawn (_bulletPrefab, transform.position + transform.forward * _armLength, transform.rotation);
+            b.GetComponent<Bullet> ().launcher = this;
             b.transform.position -= transform.right * 0.2f;
             b.transform.Rotate (transform.up * -5);
             SoundManager.instance.RandomizeSfx (_shootSFX);
-        }
+        }*/
 
         IEnumerator UpdateShoot () {
             _vibrationRight = InputManager.instance.rightVibrationStrength;
             GamePad.SetVibration (0, _vibrationLeft, _vibrationRight);
             do {
                 if (Time.time - _lastShoot >= _shootDelay / TimeManager.instance.timeScale) {
+                    if (MultiplayerManager.instance.online) {
+                        MultiplayerManager.instance.SendPlayerShoot ();
+                    }
                     Shoot ();
                     _lastShoot = Time.time;
                 }

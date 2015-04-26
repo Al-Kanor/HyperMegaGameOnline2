@@ -6,8 +6,8 @@ using System.Text;
 namespace DiosesModernos {
     public class Character {
         #region Getters
-        public int life {
-            get { return _life; }
+        public int health {
+            get { return _health; }
         }
 
         public Vector3 position {
@@ -42,7 +42,7 @@ namespace DiosesModernos {
         }
 
         #region Private properties
-        int _life;
+        protected int _health;
         Vector3 _position;
         Vector3 _rotation;
         #endregion

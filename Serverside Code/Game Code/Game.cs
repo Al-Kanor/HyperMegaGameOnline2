@@ -9,44 +9,30 @@ namespace DiosesModernos {
         #region Override
         // This method is called when an instance of your the game is created
         public override void GameStarted () {
-            SendPlayersPositions ();
-            // Reset game every 30 seconds
-            AddTimer (Reset, 30000);
+            Update ();
+            UpdateBoss ();
         }
 
         // This method is called when a player sends a message into the server code
         public override void GotMessage (Player sender, Message message) {
             switch (message.Type) {
+                // The boss has taken damage
+                case "Boss Damage":
+                    BossDamage (message.GetInt (0));
+                    break;
+                // A player sends a message to the other players
+                case "Chat":
+                    Chat (sender.ConnectUserId, message.GetString (0));
+                    break;
                 // The new position / rotation of a player
                 case "Player Position":
                     PlayerPosition (sender.ConnectUserId, message.GetFloat (0), message.GetFloat (1), message.GetFloat (2));
                     break;
-                /*case "Cube Destroyed":
-                    // called when the player has destroyed a cube
-                    int destroyedCubeId = int.Parse (message.GetString (0).Replace ("Cube", ""));
-
-                    // Find a cube by this id
-                    Cube result = cubes.Find (delegate (Cube cube) {
-                        return cube.id == destroyedCubeId;
-                    });
-
-                    if (null != result) {
-                        // Sends everyone information that a cube has been destroyed
-                        // Increases player score
-                        Broadcast ("Cube Destroyed", result.id);
-                        cubes.Remove (result);
-                        sender.cubesDestroyed++;
-                        sender.Send ("Score", sender.cubesDestroyed);
-                    }
-                    break;*/
-                // A player sends a message to the other players
-                case "Chat":
-                    foreach (Player player in Players) {
-                        if (player.ConnectUserId != sender.ConnectUserId) {
-                            player.Send ("Chat", sender.ConnectUserId, message.GetString (0));
-                        }
-                    }
+                // A player shoots
+                case "Player Shoot":
+                    PlayerShoot (sender.ConnectUserId, message.GetFloat (0), message.GetFloat (1), message.GetFloat (2));
                     break;
+                
             }
         }
 
@@ -58,7 +44,9 @@ namespace DiosesModernos {
                     newPlayer.Send ("Player Joined", player.ConnectUserId, player.avatar.x, player.avatar.z);
                 }
             }
-            
+
+            boss.AddTarget (newPlayer.avatar);
+
             // Send current cubes infos to the player
             /*foreach (Cube cube in cubes) {
                 newPlayer.Send ("Cube Spawn", cube.id, cube.x, cube.z);
@@ -68,10 +56,13 @@ namespace DiosesModernos {
         // This method is called when a player leaves the game
         public override void UserLeft (Player player) {
             Broadcast ("Player Left", player.ConnectUserId);
+            boss.RemoveTarget (player.avatar);
         }
         #endregion
 
         #region Private properties
+        int updateRate = 50;
+        Boss boss = new Boss ();
         //const int MAX_CUBES = 20;
 
         //List<Cube> cubes = new List<Cube> ();
@@ -111,7 +102,6 @@ namespace DiosesModernos {
             foreach (Player player in Players) {
                 Broadcast ("Player Position", player.ConnectUserId, player.avatar.x, player.avatar.z, player.avatar.rotation.y);
             }
-            ScheduleCallback (SendPlayersPositions, 50);    // Envoi toutes les 50 millisecondes pour un rendu fluide
         }
 
         /*void SpawnCube () {
@@ -128,15 +118,64 @@ namespace DiosesModernos {
             // Broadcast new cube information to all players
             Broadcast ("Cube Spawn", tmpCube.id, tmpCube.x, tmpCube.z);
         }*/
+
+        void Update () {
+            SendPlayersPositions ();
+            ScheduleCallback (Update, updateRate);
+        }
+
+        void UpdateBoss () {
+            if (boss.UpdateTarget ()) {
+                // The boss has a new target
+                foreach (Player player in Players) {
+                    if (player.avatar == boss.target) {
+                        Broadcast ("Boss Target", player.ConnectUserId);
+                        break;
+                    }
+                }
+            }
+            ScheduleCallback (UpdateBoss, boss.targetSwitchDelay);
+        }
         #endregion
 
         #region Client requests treatment
+        void BossDamage (int damage) {
+            // If the boss just died don't reapply damage
+            if (0 == boss.health) return;
+            if (boss.TakeDamage (damage)) {
+                // The boss is dead
+            }
+            Broadcast ("Boss Health", boss.health);
+        }
+
+        void Chat (string playerId, string message) {
+            foreach (Player player in Players) {
+                if (player.ConnectUserId != playerId) {
+                    player.Send ("Chat", playerId, message);
+                }
+            }
+        }
+
         void PlayerPosition (string playerId, float px, float pz, float ry) {
             foreach (Player player in Players) {
                 if (player.ConnectUserId == playerId) {
                     player.avatar.x = px;
                     player.avatar.z = pz;
                     player.avatar.rotation.y = ry;
+                    return;
+                }
+            }
+        }
+
+        void PlayerShoot (string playerId, float px, float pz, float ry) {
+            foreach (Player player in Players) {
+                if (player.ConnectUserId == playerId) {
+                    // Clamps the avatar to the right position and rotation
+                    player.avatar.x = px;
+                    player.avatar.z = pz;
+                    player.avatar.rotation.y = ry;
+                    Broadcast ("Player Shoot", player.ConnectUserId, px, pz, ry);
+                    return;
                 }
             }
         }
