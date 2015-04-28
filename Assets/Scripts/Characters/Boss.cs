@@ -17,6 +17,19 @@ namespace DiosesModernos {
         #endregion
 
         #region Getters
+        public override int health {
+            get {
+                return base.health;
+            }
+            set {
+                base.health = value;
+                if (0 == _health) {
+                    GameManager.instance.score++;
+                    gameObject.Recycle ();
+                }
+            }
+        }
+
         public Transform target {
             get { return _target; }
             set { _target = value; }

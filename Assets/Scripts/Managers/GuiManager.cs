@@ -7,20 +7,33 @@ namespace DiosesModernos {
         #region Properties
         [Header ("Links")]
         [SerializeField]
+        [Tooltip ("Score UI")]
+        Text scoreText;
+        /*[SerializeField]
         [Tooltip ("Time bar UI")]
         Image _timeBarUI;
         [SerializeField]
         [Tooltip ("Time Factor UI")]
-        Text _timeFactorUI;
+        Text _timeFactorUI;*/
+        #endregion
+
+        #region API
+        public void UpdateAllText () {
+
+        }
+
+        public void UpdateScore () {
+            scoreText.text = LanguageManager.instance.GetText ("kills") + " : " + GameManager.instance.score;
+        }
         #endregion
 
         #region Unity
-        void Awake () {
+        /*void Awake () {
             timeBarWidthMax = _timeBarUI.rectTransform.sizeDelta.x;
             timeBarPadding = _timeBarUI.rectTransform.anchoredPosition.x - timeBarWidthMax / 2;
-        }
+        }*/
 
-        void FixedUpdate () {
+        /*void FixedUpdate () {
             float timeScale = TimeManager.instance.timeScale;
             float timeScaleMin = TimeManager.instance.timeScaleMin;
             float timeScaleMax = TimeManager.instance.timeScaleMax;
@@ -47,12 +60,12 @@ namespace DiosesModernos {
             );
 
             _timeBarUI.color = Color.Lerp (Color.red, Color.yellow, energy / 100);
-        }
+        }*/
         #endregion
 
         #region Private properties
-        float timeBarWidthMax;
-        float timeBarPadding;
+        //float timeBarWidthMax;
+        //float timeBarPadding;
         #endregion
     }
 }

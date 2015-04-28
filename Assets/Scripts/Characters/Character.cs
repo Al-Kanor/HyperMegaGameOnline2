@@ -35,14 +35,10 @@ namespace DiosesModernos {
         #endregion
 
         #region Getters
-        public int health {
+        public virtual int health {
             get { return _health; }
             set {
                 _health = value;
-                if (0 == _health) {
-                    SoundManager.instance.StopMusic ();
-                    gameObject.Recycle ();
-                }
             }
         }
         #endregion

@@ -5,13 +5,6 @@ using System.Text;
 
 namespace DiosesModernos {
     class Boss : Character {
-        #region API
-        public Boss () {
-            _health = 100;
-            _target = this;
-        }
-        #endregion
-
         #region Private properties
         // Delay between two eventual target switches (ms)
         int _targetSwitchDelay = 1000;
@@ -36,6 +29,11 @@ namespace DiosesModernos {
         #endregion
 
         #region API
+        public Boss () {
+            _health = 100;
+            _target = this;
+        }
+
         public void AddTarget (Character target) {
             _targets.Add (target);
             if (1 == _targets.Count) {

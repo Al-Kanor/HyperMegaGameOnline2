@@ -41,6 +41,7 @@ namespace DiosesModernos {
 
         public bool online {
             get { return _online; }
+            set { _online = value; }
         }
         #endregion
 
@@ -52,10 +53,12 @@ namespace DiosesModernos {
         }*/
 
         public void SendBossDamage (int damage) {
+            if (!_joinedRoom) return;
             _pioConnection.Send ("Boss Damage", damage);
         }
 
         public void SendPlayerShoot () {
+            if (!_joinedRoom) return;
             Player player = GameManager.instance.player;
             _pioConnection.Send (
                 "Player Shoot",
@@ -182,6 +185,7 @@ namespace DiosesModernos {
             string playerId = _debug ? "" + Random.Range (1, 1000000000) : GameManager.instance.player.id;
 
             // Connection
+            Debug.Log ("Connection...");
             PlayerIOClient.PlayerIO.Connect (
                 "dioses-modernos-qxra1omlxkmsh9rxnzsonq",   // Game id
                 "public",							        // The id of the connection, as given in the settings section of the admin panel. By default, a connection with id='public' is created
@@ -201,7 +205,7 @@ namespace DiosesModernos {
 
         // The connection has been established
         void SuccessfullConnect (Client client) {
-            Debug.Log ("Successfully connected to the server");
+            Debug.Log ("Connected to the server");
 
             if (_localhost) {
                 client.Multiplayer.DevelopmentServer = new ServerEndpoint ("127.0.0.1", 8184);
@@ -209,7 +213,6 @@ namespace DiosesModernos {
             else if (_developmentServer) {
                 client.Multiplayer.DevelopmentServer = new ServerEndpoint (System.String.IsNullOrEmpty (_ipDevServer) ? "192.168.1.96" : _ipDevServer, 8184);
             }
-
             // Create or join the room	
             string roomId = "DiosesModernos";
             _pioClient = client;
