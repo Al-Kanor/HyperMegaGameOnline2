@@ -229,6 +229,7 @@ namespace DiosesModernos {
             _joinedRoom = true;
             StartCoroutine ("GotMessages");
             StartCoroutine ("SendPlayerPosition");
+            GuiManager.instance.ActivateOnlineButton ();
         }
         #endregion
 

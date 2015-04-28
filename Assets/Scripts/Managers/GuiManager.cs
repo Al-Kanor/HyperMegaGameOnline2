@@ -7,8 +7,14 @@ namespace DiosesModernos {
         #region Properties
         [Header ("Links")]
         [SerializeField]
-        [Tooltip ("Score UI")]
+        [Tooltip ("Score text")]
         Text scoreText;
+        [SerializeField]
+        [Tooltip ("Online button")]
+        Button onlineButton;
+        [SerializeField]
+        [Tooltip ("Offline button")]
+        Button offlineButton;
         /*[SerializeField]
         [Tooltip ("Time bar UI")]
         Image _timeBarUI;
@@ -18,8 +24,16 @@ namespace DiosesModernos {
         #endregion
 
         #region API
-        public void UpdateAllText () {
+        public void ActivateOnlineButton () {
+            onlineButton.interactable = true;
+            UpdateScore ();
+        }
 
+        public void UpdateAll () {
+            LanguageManager lm = LanguageManager.instance;
+            onlineButton.transform.GetChild (0).GetComponent<Text> ().text = lm.GetText ("play-online");
+            offlineButton.transform.GetChild (0).GetComponent<Text> ().text = lm.GetText ("play-offline");
+            UpdateScore ();
         }
 
         public void UpdateScore () {

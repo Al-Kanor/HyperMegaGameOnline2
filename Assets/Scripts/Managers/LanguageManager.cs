@@ -12,6 +12,7 @@ namespace DiosesModernos {
 
         #region API
         public string GetText (string key) {
+            if (null == dictionnary || 0 == dictionnary.Count) return "";
             string text = "";
             dictionnary.TryGetValue (key, out text);
             return text;
@@ -47,7 +48,7 @@ namespace DiosesModernos {
         #endregion
 
         #region Private properties
-        Dictionary<string, string> dictionnary;
+        Dictionary<string, string> dictionnary = null;
         #endregion
     }
 }

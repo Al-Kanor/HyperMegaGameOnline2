@@ -58,7 +58,7 @@ namespace DiosesModernos {
         #region Unity
         void Start () {
             _score = PlayerPrefs.GetInt ("score");
-            GuiManager.instance.UpdateScore ();
+            GuiManager.instance.UpdateAll ();
         }
         #endregion
 
