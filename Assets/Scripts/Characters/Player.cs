@@ -2,7 +2,7 @@
 using System.Collections;
 using XInputDotNetPure;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class Player : PlayableCharacter {
         #region Properties
         [Header ("Time Scaling")]
@@ -61,32 +61,6 @@ namespace DiosesModernos {
 
         #region Unity
         void FixedUpdate () {
-            /*
-            #region Time scaling
-            // Time change speed is 4x if time scale > 1
-            float speedFactor = TimeManager.Instance.TimeScale > 1 ? 4 : 1;
-
-            if (Input.GetButton ("Time Down") && Input.GetButton ("Time Up")) {
-                TimeManager.Instance.TimeScale = 1;
-            }
-            else if (Input.GetButton ("Time Down")) {
-                TimeManager.Instance.TimeScale = Mathf.Max (TimeManager.Instance.TimeScale - TimeManager.Instance.TimeDownSpeed * speedFactor * Time.fixedDeltaTime, TimeManager.Instance.TimeScaleMin);
-            }
-            else if (Input.GetButton ("Time Up")) {
-                TimeManager.Instance.TimeScale = Mathf.Min (TimeManager.Instance.TimeScale + TimeManager.Instance.TimeDownSpeed * speedFactor * Time.fixedDeltaTime, TimeManager.Instance.TimeScaleMax);
-            }
-
-            energy = Mathf.Clamp (
-                energy + (TimeManager.Instance.TimeScale - 1) / speedFactor,
-                0, 100
-            );
-
-            if (energy < 0.01f) {
-                TimeManager.Instance.TimeScale = 1;
-            }
-            #endregion
-            */
-
             #region Movement
             float h, v;
             if (_speed == _dashSpeed) {
@@ -103,11 +77,16 @@ namespace DiosesModernos {
             }
             Vector3 move = new Vector3 (h, 0, v);
             move.Normalize ();
-            Vector3 newPos = transform.position + move * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
+            //Vector3 newPos = transform.position + move * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
+            Vector3 newPos = transform.position + transform.forward * _speed * TimeManager.instance.timeScale * Time.fixedDeltaTime;
             if (InputManager.instance.joystickConnected) {
                 transform.LookAt (newPos);
             }
-            transform.position = newPos;
+            if (Input.GetMouseButton (0)) {
+                _isMoving = true;
+                transform.position = newPos;
+            }
+            else _isMoving = false;
             // Physic hack to avoid player auto move
             GetComponent<Rigidbody> ().velocity = Vector3.zero;
             #endregion
@@ -131,7 +110,15 @@ namespace DiosesModernos {
                     playerToMouse.y = 0f;
                     Quaternion newRotation = Quaternion.LookRotation (playerToMouse);
                     GetComponent<Rigidbody> ().MoveRotation (newRotation);
-                    //transform.rotation = newRotation;
+                    transform.rotation = newRotation;
+                    if (!_isShooting) {
+                        StartCoroutine ("UpdateShoot");
+                        _isShooting = true;
+                    }
+                }
+                else if (_isShooting) {
+                    StopCoroutine ("UpdateShoot");
+                    _isShooting = false;
                 }
             }
             #endregion
@@ -148,7 +135,7 @@ namespace DiosesModernos {
             #endregion
 
             #region Shoot
-            if (!_isShooting && state.Triggers.Right > 0 || Input.GetButton ("Shoot")) {
+            /*if (!_isShooting && state.Triggers.Right > 0 || Input.GetButton ("Shoot")) {
                 StartCoroutine ("UpdateShoot");
                 _isShooting = true;
             }
@@ -157,13 +144,17 @@ namespace DiosesModernos {
                 _vibrationRight = 0;
                 GamePad.SetVibration (0, _vibrationLeft, _vibrationRight);
                 _isShooting = false;
-            }
+            }*/
             #endregion
 
             #region Animation
-            string clipName = 0 == h && 0 == v ? "Idle" : "Walk";
+            string clipName = !_isMoving ? "Idle" : "Walk";
             _animation.Play (clipName);
             _animation[clipName].speed = TimeManager.instance.timeScale;
+            #endregion
+
+            #region Log
+            AnimatorControllerLog.instance.GetComponent<Animator> ().SetBool ("Walk", _isMoving);
             #endregion
         }
 
@@ -203,6 +194,8 @@ namespace DiosesModernos {
         #region Private properties
         // Current player energy (%)
         float _energy = 100;
+
+        bool _isMoving = false;
 
         bool _isDashing = false;
         float _lastDash = 0;

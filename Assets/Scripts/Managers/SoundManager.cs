@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class SoundManager : Singleton<SoundManager> {
         #region Properties
         [Header ("Sources")]

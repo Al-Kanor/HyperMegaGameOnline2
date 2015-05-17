@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class LanguageManager : Singleton<LanguageManager> {
         #region Properties
         [SerializeField]

@@ -3,7 +3,7 @@ using System.Collections;
 using PlayerIOClient;
 using System.Collections.Generic;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class MultiplayerManager : Singleton<MultiplayerManager> {
         #region Properties
         [Header ("Configuration")]

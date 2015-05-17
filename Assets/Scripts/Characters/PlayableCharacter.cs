@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class PlayableCharacter : Character {
         #region Properties
         [Header ("General")]

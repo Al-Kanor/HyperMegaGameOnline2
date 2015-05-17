@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class MainCamera : MonoBehaviour {
         #region Properties
         [Header ("General")]

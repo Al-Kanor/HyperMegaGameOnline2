@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DiosesModernos {
+namespace HMGO {
     public sealed class ObjectPool : MonoBehaviour {
         public enum StartupPoolMode { Awake, Start, CallManually };
 

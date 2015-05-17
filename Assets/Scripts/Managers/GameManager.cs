@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class GameManager : Singleton<GameManager> {
         #region Properties
         [Header ("Links")]

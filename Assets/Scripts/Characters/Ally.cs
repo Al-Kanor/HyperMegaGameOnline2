@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace DiosesModernos {
+namespace HMGO {
     public class Ally : PlayableCharacter {
         #region API
         public void ClampPosition (Vector3 pos) {
