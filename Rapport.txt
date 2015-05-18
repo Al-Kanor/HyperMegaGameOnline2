@@ -1,0 +1,37 @@
+Implémentation des différentes features requises :
+
+// Jeu de tablette \\
+
+Le jeu est jouable sur tablette tactile.
+Le joueur doit toucher l'écran pour déplacer son avatar.
+Le tir est automatique.
+
+// Réseau \\
+
+Le jeu est jouable en réseau.
+Pour tester le online, lancer le jeu sur plusieurs machines ou plusieurs fois sur le même PC.
+Lors du lancement, le jeu propose de jouer en mode online ou offline.
+Le bouton "online" est grisé tant que la connexion au serveur (et à la room) n'est pas réussie.
+Le code serveur est dans le dossier "Serverside Code/Game Code/".
+Le code multijoueur client est le fichier MultiplayerManager.
+
+// Nav Mesh \\
+
+Le boss se déplace selon un navigation mesh classique.
+
+// Sauvegarde \\
+
+Le score (nombre de boss vaicus) est sauvegardé pour chaque joueur.
+Si un joueur bat un boss (un boss vaincu à plusieurs est compté pour chaque joueur ayant participé), son score augmente.
+Si un joueur relance le jeu, son score prend la valeur sauvegardée.
+
+// Localisation \\
+
+Le jeu gère deux langues : anglais et français.
+Voir le script LanguageManager et le fichier languages.csv (dans ProjectResources/Misc/).
+
+// Mecanim \\
+
+Ayant oublié cette feature, j'ai ajouté un exemple inutile mais fonctionnel.
+Voir le dossier "Animator Controllers/" pour l'AC et le script AnimatorControllerLog.cs.
+Ce script affiche si le joueur marche ou reste immobile en utilisant une machine à état.
